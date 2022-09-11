@@ -1,7 +1,8 @@
 use std::ops::{Add, Sub, Mul, Div};
 
+#[derive(Debug, Clone, Copy)]
 pub struct Vec3 {
-     e: [f32, 3],
+     e: [f32; 3],
 }
 
 impl Vec3 {
@@ -12,7 +13,7 @@ impl Vec3 {
      }
      
      pub fn dot(u: &Vec3, v: &Vec3) -> f32 {
-          self.e[0] * other.e[0] + self.e[1] * self.e[1] + self.e[2] * self.e[2]
+          u.e[0] * v.e[0] + u.e[1] * v.e[1] + u.e[2] * v.e[2]
      }
 
      pub fn cross(u: &Vec3, v: &Vec3) -> Vec3 {
@@ -26,7 +27,7 @@ impl Vec3 {
      }
 
      pub fn length(self) -> f32 {
-          (self.e[0] * self.e[0] + self.e[1] * self.e[1]+ self.e[2] * self.[2]).sqrt()
+          (self.e[0] * self.e[0] + self.e[1] * self.e[1]+ self.e[2] * self.e[2]).sqrt()
      }
 
      pub fn unit_vector(u: &Vec3) -> Vec3 {
@@ -68,9 +69,9 @@ impl Mul for Vec3 {
      fn mul(self, v: Vec3) -> Vec3 {
           Vec3 {
                e: [
-                    self * v.e[0],
-                    self * v.e[1],
-                    self * v.e[2],
+                    self.e[0] * v.e[0],
+                    self.e[1] * v.e[1],
+                    self.e[2] * v.e[2],
                ],
           }
      }
@@ -104,12 +105,11 @@ impl Mul<Vec3> for f32 {
      }
 }
 
-impl Div for Vec3 {
+impl Div<f32> for Vec3 {
      type Output = Vec3;
 
-     fn div(self, v: Vec3) -> Vec3 {
-
-          let k = (1.0 / v); 
+     fn div(self, v: f32) -> Vec3 {
+          let k = 1.0 / v; 
 
           Vec3 {
                e: [
