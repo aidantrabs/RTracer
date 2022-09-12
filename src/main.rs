@@ -7,7 +7,31 @@ use vec3::Vec3;
 use ray::Ray;
 use color::Color;
 
+fn hit_sphere(center: Vec3, radius: f32, r: Ray) -> f32 {
+    let oc = r.origin - center;
+    let a = Vec3::dot(&r.direction, &r.direction);
+    let b = 2.0 * Vec3::dot(&oc, &r.direction);
+    let c = Vec3::dot(&oc, &oc) - radius * radius;
+    let discriminant = b * b - 4.0 * a * c;
+    if discriminant < 0.0 {
+        -1.0
+    } else {
+        (-b - discriminant.sqrt()) / (2.0 * a)
+    }
+}
+
 fn ray_color(ray: &Ray) -> Color {
+    let t = hit_sphere(Vec3::new(0.0, 0.0, -1.0), 0.5, *ray);
+    
+    if t > 0.0 {
+        let n = Vec3::unit_vector(&(ray.point_at_parameter(t) - Vec3::new(0.0, 0.0, -1.0)));
+        return Color::new(n.x() + 1.0, n.y() + 1.0, n.z() + 1.0) * 0.5;
+    }
+
+    if hit_sphere(Vec3::new(0.0, 0.0, -1.0), 0.5, *ray) > 0.0 {
+        return Color::new(1.0, 0.0, 0.0);
+    }
+
     let unit_direction = Vec3::unit_vector(&ray.direction);
     let t = 0.5 * (unit_direction.y() + 1.0);
     Color::new(1.0, 1.0, 1.0) * (1.0 - t) + Color::new(0.5, 0.7, 1.0) * t
