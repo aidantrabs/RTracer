@@ -1,84 +1,79 @@
-// mod ppm;
-mod vec3;
-mod ray;
+mod camera;
 mod color;
+mod hittable;
+mod hittable_list;
+mod ray;
+mod sphere;
+mod vec3;
 
-use vec3::Vec3;
-use ray::Ray;
-use color::Color;
+use crate::camera::*;
+use crate::color::*;
+use crate::hittable::*;
+use crate::hittable_list::*;
+use crate::ray::*;
+use crate::sphere::*;
+use crate::vec3::*;
+use rand::*;
 
-fn hit_sphere(center: Vec3, radius: f32, r: Ray) -> f32 {
-    let oc = r.origin - center;
-    let a = Vec3::dot(&r.direction, &r.direction);
-    let b = 2.0 * Vec3::dot(&oc, &r.direction);
-    let c = Vec3::dot(&oc, &oc) - radius * radius;
-    let discriminant = b * b - 4.0 * a * c;
-    if discriminant < 0.0 {
-        -1.0
-    } else {
-        (-b - discriminant.sqrt()) / (2.0 * a)
-    }
+fn random_double() -> f32 {
+    rand::thread_rng().gen() / (std::u32::MAX as f32)
 }
 
-fn ray_color(ray: &Ray) -> Color {
-    let t = hit_sphere(Vec3::new(0.0, 0.0, -1.0), 0.5, *ray);
-    
-    if t > 0.0 {
-        let n = Vec3::unit_vector(&(ray.point_at_parameter(t) - Vec3::new(0.0, 0.0, -1.0)));
-        return Color::new(n.x() + 1.0, n.y() + 1.0, n.z() + 1.0) * 0.5;
+// ray color
+fn ray_color(r: &Ray, world: &dyn Hittable, depth: i32) -> Color {
+    let mut rec = HitRecord::new();
+
+    if depth <= 0 {
+        return Color::new(0.0, 0.0, 0.0);
     }
 
-    if hit_sphere(Vec3::new(0.0, 0.0, -1.0), 0.5, *ray) > 0.0 {
-        return Color::new(1.0, 0.0, 0.0);
+    if world.hit(r, 0.001, f32::INFINITY, &mut rec) {
+        let target = rec.p + rec.normal + Vec3::random_in_unit_sphere();
+        return 0.5 * ray_color(&Ray::new(rec.p, target - rec.p), world, depth - 1);
     }
 
-    let unit_direction = Vec3::unit_vector(&ray.direction);
+    let unit_direction = Vec3::unit_vector(&r.direction);
     let t = 0.5 * (unit_direction.y() + 1.0);
-    Color::new(1.0, 1.0, 1.0) * (1.0 - t) + Color::new(0.5, 0.7, 1.0) * t
+    (1.0 - t) * Color::new(1.0, 1.0, 1.0) + t * Color::new(0.5, 0.7, 1.0)
 }
 
+// main
 fn main() {
-
-    const ASPECT_RATIO: f32 = 16.0 / 9.0;
-    const IMG_WIDTH: i32 = 400;
-    const IMG_HEIGHT: i32 = (IMG_WIDTH as f32 / ASPECT_RATIO) as i32;
-
-    println!("P3 {} {} 255", IMG_WIDTH, IMG_HEIGHT);
-
+    // image
+    let aspect_ratio = 16.0 / 9.0;
+    let image_width = 400;
+    let image_height = (image_width as f32 / aspect_ratio) as i32;
+    let samples_per_pixel = 100;
+    let max_depth = 50;
+    
     let viewport_height = 2.0;
-    let viewport_width = ASPECT_RATIO * viewport_height;
+    let viewport_width = aspect_ratio * viewport_height;
     let focal_length = 1.0;
 
-    let origin = Vec3::new(0.0, 0.0, 0.0);
-    let horizontal = Vec3::new(viewport_width, 0.0, 0.0);
-    let vertical = Vec3::new(0.0, viewport_height, 0.0);
-    let lower_left_corner = origin - horizontal / 2.0 - vertical / 2.0 - Vec3::new(0.0, 0.0, focal_length);
+    // render
+    println!("P3 {} {}", image_width, image_height);
+    println!("255");
+    
+    // world - no material
+    let mut world = HittableList::new();
+    world.add(Box::new(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5)));
+    world.add(Box::new(Sphere::new(Vec3::new(0.0, -100.5, -1.0), 100.0)));
 
-    for j in (0..IMG_HEIGHT).rev() {
+    // camera
+    let camera = Camera::new(&origin, , , FOCAL_LENGTH);
+
+    // render
+    for j in (0..image_height).rev() {
         eprintln!("Scanlines remaining: {}", j);
-        for i in 0..IMG_WIDTH {
-            let u = i as f32 / (IMG_WIDTH - 1) as f32;
-            let v = j as f32 / (IMG_HEIGHT - 1) as f32;
-            let r = Ray::new(origin, lower_left_corner + u * horizontal + v * vertical - origin);
-            let pixel_color = ray_color(&r);
-            pixel_color.write_color();
+        for i in 0..image_width {
+            let mut pixel_color = Color::new(0.0, 0.0, 0.0);
+            for _ in 0..samples_per_pixel {
+                let u = (i as f32 + random_double()) / (image_width - 1) as f32;
+                let v = (j as f32 + random_double()) / (image_height - 1) as f32;
+                let r = cam.get_ray(u, v);
+                pixel_color += ray_color(&r, &world, max_depth);
+            }
+            Color::write_color(&pixel_color, samples_per_pixel);
         }
     }
 }
-// ppm::write_ppm();
-// let u: Vec3 = Vec3::new(1f32, 3f32, 5f32);
-// let v: Vec3 = Vec3::new(2f32, 5f32, 6f32);
-
-// let sum = u + v;
-// let diff = u - v;
-// let prod = u * v;
-// let prod2 = 2f32 * v;
-// let prod3 = u * 2f32;
-// let div = u / 2f32;
-
-// println!("Sum of u and v: {:?}", sum);
-// println!("Difference of u and v: {:?}", diff);
-// println!("Product of u and v: {:?}", prod);
-// println!("Product of 2 and v: {:?}", prod2);
-// println!("Product of u and 2: {:?}", prod3);
-// println!("Division of u and 2: {:?}", div);
