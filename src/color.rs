@@ -1,4 +1,4 @@
-use std::ops::{Add, Sub, Mul, Div};
+use std::ops::{Add, AddAssign, Sub, Mul, Div};
 
 #[derive(Debug, Clone, Copy)]
 pub struct Color {
@@ -24,12 +24,17 @@ impl Color {
           self.b
      }
 
-     pub fn write_color(&self) {
-          let ir: i32 = (255.999 * self.r) as i32;
-          let ig: i32 = (255.999 * self.g) as i32;
-          let ib: i32 = (255.999 * self.b) as i32;
+     pub fn write_color(&self, samples_per_pixel: i32) {
+          let scale = 1.0 / samples_per_pixel as f32;
+          let r = (self.r * scale).sqrt();
+          let g = (self.g * scale).sqrt();
+          let b = (self.b * scale).sqrt();
 
-          println!("{} {} {} ", ir, ig, ib);
+          let ir = (256.0 * clamp(r, 0.0, 0.999)) as i32;
+          let ig = (256.0 * clamp(g, 0.0, 0.999)) as i32;
+          let ib = (256.0 * clamp(b, 0.0, 0.999)) as i32;
+
+          println!("{} {} {}", ir, ig, ib);
      }
 }
 
@@ -38,6 +43,16 @@ impl Add for Color {
      
      fn add(self, c: Color) -> Color {
           Color {
+               r: self.r + c.r,
+               g: self.g + c.g,
+               b: self.b + c.b,
+          }
+     }
+}
+
+impl AddAssign for Color {
+     fn add_assign(&mut self, c: Color) {
+          *self = Color {
                r: self.r + c.r,
                g: self.g + c.g,
                b: self.b + c.b,
@@ -77,6 +92,18 @@ impl Mul<f32> for Color {
                r: self.r * t,
                g: self.g * t,
                b: self.b * t,
+          }
+     }
+}
+
+impl Mul<Color> for f32 {
+     type Output = Color;
+     
+     fn mul(self, c: Color) -> Color {
+          Color {
+               r: self * c.r,
+               g: self * c.g,
+               b: self * c.b,
           }
      }
 }
