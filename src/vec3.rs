@@ -1,4 +1,5 @@
-use std::ops::{Add, Sub, Mul, Div};
+use std::ops::{Add, Sub, Mul, Div, Neg};
+use rand::Rng;
 
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct Vec3 {
@@ -42,8 +43,25 @@ impl Vec3 {
           (self.e[0] * self.e[0] + self.e[1] * self.e[1]+ self.e[2] * self.e[2]).sqrt()
      }
 
+     pub fn length_squared(self) -> f32 {
+          self.e[0] * self.e[0] + self.e[1] * self.e[1]+ self.e[2] * self.e[2]
+     }
+
      pub fn unit_vector(u: &Vec3) -> Vec3 {
           *u / u.length()
+     }
+
+     pub fn random_in_unit_sphere() -> Vec3 {
+          loop {
+               let p = Vec3::new(
+                    rand::random::<f32>(),
+                    rand::random::<f32>(),
+                    rand::random::<f32>(),
+               ) * 2.0 - Vec3::new(1.0, 1.0, 1.0);
+               if p.length_squared() < 1.0 {
+                    return p;
+               }
+          }
      }
 }
 
@@ -132,4 +150,36 @@ impl Div<f32> for Vec3 {
           }
      }
 }
+
+impl Div<Vec3> for f32 {
+     type Output = Vec3;
+
+     fn div(self, v: Vec3) -> Vec3 {
+          let k = 1.0 / self; 
+
+          Vec3 {
+               e: [
+                    v.e[0] * k,
+                    v.e[1] * k,
+                    v.e[2] * k,
+               ],
+          }
+     }
+}
+
+impl Neg for Vec3 {
+     type Output = Vec3;
+
+     fn neg(self) -> Vec3 {
+          Vec3 {
+               e: [
+                    -self.e[0],
+                    -self.e[1],
+                    -self.e[2],
+               ],
+          }
+     }
+}
+
+
 
