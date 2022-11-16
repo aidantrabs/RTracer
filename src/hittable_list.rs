@@ -2,34 +2,24 @@ use crate::hittable::*;
 use crate::ray::Ray;
 
 pub struct HittableList {
-    pub objects: Vec<Box<dyn Hittable>>,
+    list: Vec<Box<dyn Hittable>>,
 }
 
 impl HittableList {
-    pub fn new() -> Self {
-        Self { objects: Vec::new() }
-    }
-
-    pub fn add(&mut self, object: Box<dyn Hittable>) {
-        self.objects.push(object);
-    }
-
-    pub fn clear(&mut self) {
-        self.objects.clear();
+    pub fn new(list: Vec<Box<dyn Hittable>>) -> Self {
+        Self { list }
     }
 }
 
 impl Hittable for HittableList {
-    fn hit(&self, r: &Ray, t_min: f32, t_max: f32, rec: &mut HitRecord) -> bool {
-        let mut temp_rec = HitRecord::new();
-        let mut hit_anything = false;
+    fn hit(&self, r: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
+        let mut hit_anything = None;
         let mut closest_so_far = t_max;
 
-        for object in &self.objects {
-            if object.hit(r, t_min, closest_so_far, &mut temp_rec) {
-                hit_anything = true;
-                closest_so_far = temp_rec.t;
-                *rec = temp_rec;
+        for object in &self.list {
+            if let Some(hit_record) = object.hit(r, t_min, closest_so_far) {
+                closest_so_far = hit_record.t;
+                hit_anything = Some(hit_record);
             }
         }
 
