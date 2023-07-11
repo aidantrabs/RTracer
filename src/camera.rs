@@ -1,5 +1,5 @@
-use crate::{Vec3, Point3, Ray, utils};
-use crate::utils::{degrees_to_radians, random_f32, random_f32_range, clamp, PI};
+use crate::{Vec3, Point3, Ray};
+use crate::utils::{PI};
 
 #[derive(Debug, Copy, Clone)]
 pub struct Camera {
@@ -9,7 +9,6 @@ pub struct Camera {
      vertical: Vec3,
      u: Vec3,
      v: Vec3,
-     w: Vec3,
      lens_radius: f32,
 }
 
@@ -23,17 +22,17 @@ impl Camera {
           aperture: f32,
           focus_dist: f32,
      ) -> Camera {
-          let theta = ((PI as f32) / 180.0 * vfov);
-          let vp_height = (2.0 * ((theta as f32) / 2.0).tan());
-          let vp_width = (aspect_ratio * vp_height);
+          let theta = (PI as f32) / 180.0 * vfov;
+          let vp_height = 2.0 * ((theta as f32) / 2.0).tan();
+          let vp_width = aspect_ratio * vp_height;
 
           let _w = Vec3::unit_vector(from - at);
           let _u = Vec3::unit_vector(Vec3::cross(vup, _w));
           let _v = Vec3::cross(_w, _u);
 
-          let h = (focus_dist * vp_width * _u);
-          let v = (focus_dist * vp_height * _v);
-          let llc = (from - h / 2.0 - v / 2.0 - focus_dist * _w);
+          let h = focus_dist * vp_width * _u;
+          let v = focus_dist * vp_height * _v;
+          let llc = from - h / 2.0 - v / 2.0 - focus_dist * _w;
 
           return Camera {
                origin: from,
@@ -48,7 +47,7 @@ impl Camera {
 
      pub fn get_ray(&self, s: f32, t: f32) -> Ray {
           let rd = self.lens_radius * Vec3::random_in_unit_disk();
-          let offset = self.u * rd.x() + self.v * rd.y();
+          let offset = rd.x() * self.u + rd.y() * self.v;
 
           return Ray::new(
                self.origin + offset,
