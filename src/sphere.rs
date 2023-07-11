@@ -1,46 +1,59 @@
-use crate::vec3::Vec3;
-use crate::hittable::*;
-use crate::ray::Ray;
+use crate::vec3::Point3;
+use crate::hittable::{Hittable, HitRecord};
+use crate::material::Material;
 
 pub struct Sphere {
-    pub center: Vec3,
-    pub radius: f32,
+     pub center: Point3,
+     pub radius: f32,
+     material_ptr: Arc<dyn Material>,
 }
 
 impl Sphere {
-    pub fn new(center: Vec3, radius: f32) -> Self {
-        Self { center, radius }
-    }
+     pub fn new(cen: Point3, r: f32, m: Arc<dyn Material>) -> Sphere {
+          Sphere {
+               center: cen,
+               radius: r,
+               material_ptr: m,
+          }
+     }
 }
 
 impl Hittable for Sphere {
-    fn hit(&self, r: &Ray, t_min: f32, t_max: f32, rec: &mut HitRecord) -> bool {
-        let oc = r.origin - self.center;
-        let a = Vec3::dot(&r.direction, &r.direction);
-        let half_b = Vec3::dot(&oc, &r.direction);
-        let c = Vec3::dot(&oc, &oc) - self.radius * self.radius;
-        let discriminant = half_b * half_b - a * c;
+     fn hit(&self, r: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
+          let oc = r.origin() - self.center;
+          let a = r.direction().length_squared();
+          let half_b = Vec3::dot(oc, r.direction());
+          let c = oc.length_squared() - self.radius.powi(2);
 
-        if discriminant < 0.0 {
-            return false;
-        }
+          let discriminant = half_b.powi(2) - a * c;
 
-        let sqrtd = discriminant.sqrt();
+          if discriminant < 0.0 {
+               return None;
+          }
 
-        // Find the nearest root that lies in the acceptable range.
-        let mut root = (-half_b - sqrtd) / a;
-        if root < t_min || t_max < root {
-            root = (-half_b + sqrtd) / a;
-            if root < t_min || t_max < root {
-                return false;
-            }
-        }
+          let sqrtd = discriminant.sqrt();
 
-        rec.t = root;
-        rec.p = r.at(rec.t);
-        let outward_normal = (rec.p - self.center) / self.radius;
-        rec.set_face_normal(r, outward_normal);
+          let mut root = (-half_b - sqrtd) / a;
 
-        true
-    }
+          if root < t_min || t_max < root {
+               root = (-half_b + sqrtd) / a;
+
+               if root < t_min || t_max < root {
+                    return None;
+               }
+          }
+
+          let mut rec = HitRecord {
+               t: root,
+               p: r.at(root),
+               normal: Vec3::new(0.0, 0.0, 0.0),
+               material_ptr: self.material_ptr.clone(),
+               front_face: false,
+          };
+
+          let outward_normal = (rec.p - self.center) / self.radius;
+          rec.set_face_normal(r, &outward_normal);
+
+          return Some(rec);
+     }
 }
