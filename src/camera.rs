@@ -1,6 +1,11 @@
 use crate::{Vec3, Point3, Ray};
 use crate::utils::{PI};
 
+/*
+     @Description: Camera struct
+     @Params: origin: Point3, lower_left_corner: Point3, horizontal: Vec3, vertical: Vec3, u: Vec3, v: Vec3, lens_radius: f32
+     @Returns: None
+*/
 #[derive(Debug, Copy, Clone)]
 pub struct Camera {
      origin: Point3,
@@ -12,6 +17,12 @@ pub struct Camera {
      lens_radius: f32,
 }
 
+/*
+     @Description: Camera implementation
+     @Function: new - Creates a new camera
+     @Function: get_ray - Returns a ray
+     @Returns: Camera
+*/
 impl Camera {
      pub fn new(
           from: Point3,

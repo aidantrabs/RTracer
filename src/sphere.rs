@@ -4,12 +4,22 @@ use crate::vec3::{Point3, Vec3};
 use crate::hittable::{Hittable, HitRecord};
 use crate::material::Material;
 
+/*
+     @Description: A struct that holds information about a sphere
+     @Params: center: Point3, radius: f32, material_ptr: Arc<dyn Material>
+     @Returns: None
+*/
 pub struct Sphere {
      pub center: Point3,
      pub radius: f32,
      material_ptr: Arc<dyn Material>,
 }
 
+/*
+     @Description: Implementation of the Sphere struct
+     @Function: new - Creates a new sphere
+     @Returns: Sphere
+*/
 impl Sphere {
      pub fn new(cen: Point3, r: f32, m: Arc<dyn Material>) -> Sphere {
           Sphere {
@@ -20,6 +30,11 @@ impl Sphere {
      }
 }
 
+/*
+     @Description: Implementation of the Hittable trait for Sphere
+     @Function: hit - Determines if a ray hits a sphere
+     @Returns: Option<HitRecord>
+*/
 impl Hittable for Sphere {
      fn hit(&self, r: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
           let oc = r.origin() - self.center;

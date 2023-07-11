@@ -1,11 +1,48 @@
 use std::ops::{Add, Sub, Mul, Div};
 use crate::utils::{random_f32, random_f32_range};
 
+/*
+     @Description: A struct that holds information about a 3D vector
+     @Params: None
+     @Returns: None
+*/
 #[derive(Debug, Clone, Copy)]
 pub struct Vec3 {
      e: [f32; 3],
 }
 
+/*
+     @Description: Implementation of the Vec3 struct
+     @Function: new - Creates a new Vec3
+     @Function: x - Returns the x value of the Vec3
+     @Function: y - Returns the y value of the Vec3
+     @Function: z - Returns the z value of the Vec3
+     @Function: length - Returns the length of the Vec3
+     @Function: length_squared - Returns the length squared of the Vec3
+     @Function: dot - Returns the dot product of two Vec3s
+     @Function: cross - Returns the cross product of two Vec3s
+     @Function: unit_vector - Returns the unit vector of a Vec3
+     @Function: random - Returns a random Vec3
+     @Function: random_range - Returns a random Vec3 in a given range
+     @Function: random_in_unit_sphere - Returns a random Vec3 in a unit sphere
+     @Function: random_unit_vector - Returns a random unit vector
+     @Function: random_in_hemisphere - Returns a random Vec3 in a hemisphere
+     @Function: random_in_unit_disk - Returns a random Vec3 in a unit disk
+     @Function: near_zero - Returns true if the Vec3 is near zero
+     @Function: reflect - Returns the reflection of a Vec3
+     @Function: refract - Returns the refraction of a Vec3
+     @Function: reflectance - Returns the reflectance of a Vec3
+     @Function: random_in_unit_sphere - Returns a random Vec3 in a unit sphere
+     @Function: random_in_unit_sphere - Returns a random Vec3 in a unit sphere
+     @Function: random_in_unit_sphere - Returns a random Vec3 in a unit sphere
+     @Function: random_in_unit_sphere - Returns a random Vec3 in a unit sphere
+     @Function: random_in_unit_sphere - Returns a random Vec3 in a unit sphere
+     @Function: random_in_unit_sphere - Returns a random Vec3 in a unit sphere
+     @Function: random_in_unit_sphere - Returns a random Vec3 in a unit sphere
+     @Function: random_in_unit_sphere - Returns a random Vec3 in a unit sphere
+     @Function: random_in_unit_sphere - Returns a random Vec3 in a unit sphere
+     @Returns: None
+*/
 impl Vec3 {
      pub fn new(e0: f32, e1: f32, e2: f32) -> Vec3 {
           let vec = Vec3 {

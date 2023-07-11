@@ -6,10 +6,21 @@ use crate::vec3::Color;
 use crate::hittable::HitRecord;
 use crate::material::Material;
 
+/*
+     @Description: Dielectric material
+     @Params: refraction_index: f32
+     @Returns: None
+*/
 pub struct Dielectric {
      refraction_index: f32,
 }
 
+/*
+     @Description: Implementation of Dielectric
+     @Function: new - Creates a new Dielectric material
+     @Function: reflectance - Calculates the reflectance of a ray
+     @Returns: Dielectric reflection
+*/
 impl Dielectric {
      pub fn new(ir: f32) -> Dielectric {
           return Dielectric { refraction_index: ir };
@@ -23,6 +34,12 @@ impl Dielectric {
      }
 }
 
+/*
+     @Description: Implementation of Material for Dielectric
+     @Function: scatter - Calculates the scattered ray
+     @Function: clone - Clones the material
+     @Returns: Dielectric material
+*/
 impl Material for Dielectric {
      fn scatter(&self, r_in: &Ray, rec: &HitRecord) -> Option<(Color, Ray)> {
           let refraction_ratio: f32 = if rec.front_face { 1.0 / self.refraction_index } else { self.refraction_index };

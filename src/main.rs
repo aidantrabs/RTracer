@@ -27,6 +27,11 @@ use crate::hittable::Hittable;
 use crate::dieletric::Dielectric;
 use crate::metal::Metal;
 
+/*
+     @Description: Handles the creation of the world
+     @Params: None
+     @Returns: None
+*/
 fn main() {
      const IMAGE_WIDTH: i32 = 1200;
      const ASPECT_RATIO: f32 = 3.0 / 2.0;
@@ -72,6 +77,11 @@ fn main() {
      eprintln!("\nCompleted!\n");
 }
 
+/*
+     @Description: Generates a random scene
+     @Params: None
+     @Returns: HittableList
+*/
 fn random_scene() -> HittableList {
      let mut rng = rand::thread_rng();
      let world_list: Vec<Box<dyn Hittable>> = Vec::new();
