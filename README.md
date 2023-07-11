@@ -6,6 +6,7 @@
 
 <div align="center">
 
+![GitHub](https://img.shields.io/github/license/aidantrabs/RTracer?style=flat-square)
 
 </div>
 
