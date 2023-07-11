@@ -1,21 +1,29 @@
-use crate::vec3::Vec3;
+use crate::Vec3;
+use crate::vec3::Point3;
 
-#[derive(Debug, Copy, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Copy, Clone)]
 pub struct Ray {
-    pub origin: Vec3,
-    pub direction: Vec3,
+     pub origin: Point3,
+     pub direction: Vec3,
 }
 
 impl Ray {
-    pub fn new(origin: Vec3, direction: Vec3) -> Ray {
-        Ray { origin, direction }
-    }
+     pub fn new(orig: Point3, dir: Vec3) -> Ray {
+          return Ray {
+               origin: orig,
+               direction: dir,
+          };
+     }
 
-    pub fn point_at_parameter(&self, t: f32) -> Vec3 {
-        self.origin + t * self.direction
-    }
+     pub fn origin(&self) -> Point3 {
+          return self.origin;
+     }
 
-    pub fn at(&self, t: f32) -> Vec3 {
-        self.origin + t * self.direction
-    }
+     pub fn direction(&self) -> Point3 {
+          return self.direction;
+     }
+
+     pub fn at(&self, t: f32) -> Point3 {
+          return self.origin + t * self.direction
+     }
 }
