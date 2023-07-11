@@ -23,5 +23,8 @@ $ cargo run > image.ppm
 ![Rendition](https://github.com/aidantrabs/RTracer/blob/main/output/image.png)
 
 ### References :paperclip:
-- My rust implementation of the book: 
+- My Rust implementation of the book: 
 [_Ray Tracing in One Weekend_](https://raytracing.github.io/books/RayTracingInOneWeekend.html)
+
+### Next steps
+- [ ] Implement: [_Ray Tracing: The Next Week_](https://raytracing.github.io/books/RayTracingTheNextWeek.html)
