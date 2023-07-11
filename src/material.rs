@@ -1,5 +1,5 @@
 use std::sync::Arc;
-use crate:ray::Ray;
+use crate::ray::Ray;
 use crate::Color;
 use crate::hittable::HitRecord;
 
