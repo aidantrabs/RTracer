@@ -1,69 +1,58 @@
-use crate::vec3::Vec3;
+use crate::{Vec3, Point3, Ray, utils};
+use crate::utils::{degrees_to_radians, random_f32, random_f32_range, clamp, PI};
 
+#[derive(Debug, Copy, Clone)]
 pub struct Camera {
-    pub origin: Vec3,
-    pub lower_left_corner: Vec3,
-    pub horizontal: Vec3,
-    pub vertical: Vec3,
-    pub u: Vec3,
-    pub v: Vec3,
-    pub w: Vec3,
-    pub lens_radius: f32,
+     origin: Point3,
+     lower_left_corner: Point3,
+     horizontal: Vec3,
+     vertical: Vec3,
+     u: Vec3,
+     v: Vec3,
+     w: Vec3,
+     lens_radius: f32,
 }
 
 impl Camera {
-     pub fn camera(
-          lookfrom: Vec3,
-          lookat: Vec3,
+     pub fn new(
+          from: Point3,
+          at: Point3,
           vup: Vec3,
-          vfov: f32, 
-          aspect: f32,
+          vfov: f32,
+          aspect_ratio: f32,
           aperture: f32,
           focus_dist: f32,
      ) -> Camera {
-          let theta = vfov * std::f32::consts::PI / 180.0;
-          let half_height = (theta / 2.0).tan();
-          let half_width = aspect * half_height;
+          let theta = ((PI as f32) / 180.0 * vfov);
+          let vp_height = (2.0 * ((theta as f32) / 2.0).tan());
+          let vp_width = (aspect_ratio * vp_height);
 
-          let w = (lookfrom - lookat).unit_vector();
-          let u = vup.cross(w).unit_vector();
-          let v = w.cross(u);
+          let _w = Vec3::unit_vector(from - at);
+          let _u = Vec3::unit_vector(Vec3::cross(vup, _w));
+          let _v = Vec3::cross(_w, _u);
 
-          let origin = lookfrom;
-          let horizontal = focus_dist * 2.0 * half_width * u;
-          let vertical = focus_dist * 2.0 * half_height * v;
-          let lower_left_corner = origin - horizontal / 2.0 - vertical / 2.0 - focus_dist * w;
-          let lens_radius = aperture / 2.0;
+          let h = (focus_dist * vp_width * _u);
+          let v = (focus_dist * vp_height * _v);
+          let llc = (from - h / 2.0 - v / 2.0 - focus_dist * _w);
 
-          Camera {
-               origin,
-               lower_left_corner,
-               horizontal,
-               vertical,
-               u,
-               v,
-               w,
-               lens_radius,
-          } 
+          return Camera {
+               origin: from,
+               lower_left_corner: llc,
+               horizontal: h,
+               vertical: v,
+               u: _u,
+               v: _v,
+               lens_radius: aperture / 2.0,
+          }
      }
 
      pub fn get_ray(&self, s: f32, t: f32) -> Ray {
-          let rd = self.lens_radius * random_in_unit_disk();
+          let rd = self.lens_radius * Vec3::random_in_unit_disk();
           let offset = self.u * rd.x() + self.v * rd.y();
-        
-          Ray {
-               origin: self.origin + offset,
-               direction: self.lower_left_corner + s * self.horizontal + t * self.vertical - self.origin - offset,
-          }
-     }
-}
 
-fn random_in_unit_disk() -> Vec3 {
-     let mut p = Vec3::new(1.0, 1.0, 0.0);
-     
-     while p.squared_length() >= 1.0 {
-          p = 2.0 * Vec3::new(rand::random::<f32>(), rand::random::<f32>(), 0.0) - Vec3::new(1.0, 1.0, 0.0);
+          return Ray::new(
+               self.origin + offset,
+               self.lower_left_corner + s * self.horizontal + t * self.vertical - self.origin - offset,
+          );
      }
-
-     return p;
 }
