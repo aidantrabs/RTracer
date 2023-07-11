@@ -1,6 +1,6 @@
 use rand::Rng;
 
-pub static PI: f32 = 3.1415926535897932385;
+pub static PI: f64 = 3.1415926535897932385;
 
 #[inline]
 pub fn degrees_to_radians(degrees: f64) -> f64 {
