@@ -135,54 +135,43 @@ impl Vec3 {
 impl Add for Vec3 {
      type Output = Vec3;
 
-     fn add(self, v: Vec3) -> Vec3 {
-          Vec3 {
+     #[inline]
+     fn add(self, _v: Vec3) -> Self::Output {
+          return Vec3 {
                e: [
-                    self.e[0] + v.e[0],
-                    self.e[1] + v.e[1],
-                    self.e[2] + v.e[2],
+                    self.e[0] + _v.e[0],
+                    self.e[1] + _v.e[1],
+                    self.e[2] + _v.e[2],
                ],
           }
      }
 }
 
 impl Sub for Vec3 {
-     type Output = Self;
+     type Output = Vec3;
 
-     fn sub(self, v: Vec3) -> Vec3 {
-          Vec3 {
+     #[inline]
+     fn sub(self, _v: Vec3) -> Self::Output {
+          return Vec3 {
                e: [
-                    self.e[0] - v.e[0],
-                    self.e[1] - v.e[1],
-                    self.e[2] - v.e[2],
+                    self.e[0] - _v.e[0],
+                    self.e[1] - _v.e[1],
+                    self.e[2] - _v.e[2],
                ],
           }
      }
 }
 
 impl Mul for Vec3 {
-     type Output = Vec3;
+     type Output = Self;
 
-     fn mul(self, v: Vec3) -> Vec3 {
+     #[inline]
+     fn mul(self, _v: Vec3) -> Vec3 {
           Vec3 {
                e: [
-                    self.e[0] * v.e[0],
-                    self.e[1] * v.e[1],
-                    self.e[2] * v.e[2],
-               ],
-          }
-     }
-}
-
-impl Mul<f32> for Vec3 {
-     type Output = Vec3;
-
-     fn mul(self, v: f32) -> Vec3 {
-          Vec3 {
-               e: [
-                    v * self.e[0],
-                    v * self.e[1],
-                    v * self.e[2],
+                    self.e[0] * _v.e[0],
+                    self.e[1] * _v.e[1],
+                    self.e[2] * _v.e[2],
                ],
           }
      }
@@ -191,62 +180,44 @@ impl Mul<f32> for Vec3 {
 impl Mul<Vec3> for f32 {
      type Output = Vec3;
 
-     fn mul(self, v: Vec3) -> Vec3 {
-          Vec3 {
+     #[inline]
+     fn mul(self, mut _v: Vec3) -> Self::Output {
+          _v.e[0] *= self;
+          _v.e[1] *= self;
+          _v.e[2] *= self;
+
+          return _v;
+     }
+}
+
+impl Div for Vec3 {
+     type Output = Self;
+
+     #[inline]
+     fn div(self, _v: Vec3) -> Vec3 {
+          return Vec3 {
                e: [
-                    self * v.e[0],
-                    self * v.e[1],
-                    self * v.e[2],
+                    self.e[0] / _v.e[0],
+                    self.e[1] / _v.e[1],
+                    self.e[2] / _v.e[2],
                ],
           }
      }
 }
 
 impl Div<f32> for Vec3 {
-     type Output = Vec3;
+     type Output = Self;
 
-     fn div(self, v: f32) -> Vec3 {
-          let k = 1.0 / v; 
-
-          Vec3 {
+     fn div(self, _v: f32) -> Self::Output {
+          return Vec3 {
                e: [
-                    self.e[0] * k,
-                    self.e[1] * k,
-                    self.e[2] * k,
+                    self.e[0] / _v,
+                    self.e[1] / _v,
+                    self.e[2] / _v,
                ],
           }
      }
 }
 
-impl Div<Vec3> for f32 {
-     type Output = Vec3;
-
-     fn div(self, v: Vec3) -> Vec3 {
-          let k = 1.0 / self; 
-
-          Vec3 {
-               e: [
-                    v.e[0] * k,
-                    v.e[1] * k,
-                    v.e[2] * k,
-               ],
-          }
-     }
-}
-
-impl Neg for Vec3 {
-     type Output = Vec3;
-
-     fn neg(self) -> Vec3 {
-          Vec3 {
-               e: [
-                    -self.e[0],
-                    -self.e[1],
-                    -self.e[2],
-               ],
-          }
-     }
-}
-
-
-
+pub type Point3 = Vec3;
+pub type Color = Vec3;
