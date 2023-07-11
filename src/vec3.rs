@@ -1,5 +1,5 @@
-use std::ops::{Add, Sub, Mul, Div, Neg};
-use crate::utils::{degrees_to_radians, random_f32, random_f32_range, clamp};
+use std::ops::{Add, Sub, Mul, Div};
+use crate::utils::{random_f32, random_f32_range};
 
 #[derive(Debug, Clone, Copy)]
 pub struct Vec3 {
@@ -10,7 +10,7 @@ impl Vec3 {
      pub fn new(e0: f32, e1: f32, e2: f32) -> Vec3 {
           let vec = Vec3 {
                e: [e0, e1, e2]
-          }
+          };
 
           return vec;
      }
@@ -36,7 +36,7 @@ impl Vec3 {
      }
      
      #[inline]
-     pub fn dot(self, v: Vec3) -> Vec3 {
+     pub fn dot(self, v: Vec3) -> f32 {
           return self.e[0] * v.e[0] + self.e[1] * v.e[1] + self.e[2] * v.e[2];
      }
 
