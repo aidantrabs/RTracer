@@ -26,21 +26,11 @@ pub struct Vec3 {
      @Function: random_range - Returns a random Vec3 in a given range
      @Function: random_in_unit_sphere - Returns a random Vec3 in a unit sphere
      @Function: random_unit_vector - Returns a random unit vector
-     @Function: random_in_hemisphere - Returns a random Vec3 in a hemisphere
      @Function: random_in_unit_disk - Returns a random Vec3 in a unit disk
      @Function: near_zero - Returns true if the Vec3 is near zero
+     @Function: change - Changes the Vec3 to a given Vec3
      @Function: reflect - Returns the reflection of a Vec3
      @Function: refract - Returns the refraction of a Vec3
-     @Function: reflectance - Returns the reflectance of a Vec3
-     @Function: random_in_unit_sphere - Returns a random Vec3 in a unit sphere
-     @Function: random_in_unit_sphere - Returns a random Vec3 in a unit sphere
-     @Function: random_in_unit_sphere - Returns a random Vec3 in a unit sphere
-     @Function: random_in_unit_sphere - Returns a random Vec3 in a unit sphere
-     @Function: random_in_unit_sphere - Returns a random Vec3 in a unit sphere
-     @Function: random_in_unit_sphere - Returns a random Vec3 in a unit sphere
-     @Function: random_in_unit_sphere - Returns a random Vec3 in a unit sphere
-     @Function: random_in_unit_sphere - Returns a random Vec3 in a unit sphere
-     @Function: random_in_unit_sphere - Returns a random Vec3 in a unit sphere
      @Returns: None
 */
 impl Vec3 {
@@ -169,6 +159,11 @@ impl Vec3 {
      }
 }
 
+/*
+     @Description: Addition operator overloading for Vec3
+     @Params: None
+     @Returns: None
+*/
 impl Add for Vec3 {
      type Output = Vec3;
 
@@ -184,6 +179,11 @@ impl Add for Vec3 {
      }
 }
 
+/*
+     @Description: Subtraction operator overloading for Vec3
+     @Params: None
+     @Returns: None
+*/
 impl Sub for Vec3 {
      type Output = Vec3;
 
@@ -199,6 +199,11 @@ impl Sub for Vec3 {
      }
 }
 
+/*
+     @Description: Multiplication operator overloading for Vec3
+     @Params: None
+     @Returns: None
+*/
 impl Mul for Vec3 {
      type Output = Self;
 
@@ -214,6 +219,11 @@ impl Mul for Vec3 {
      }
 }
 
+/*
+     @Description: Multiplication operator overloading for Vec3 (f32)
+     @Params: None
+     @Returns: None
+*/
 impl Mul<Vec3> for f32 {
      type Output = Vec3;
 
@@ -227,6 +237,11 @@ impl Mul<Vec3> for f32 {
      }
 }
 
+/*
+     @Description: Division operator overloading for Vec3
+     @Params: None
+     @Returns: None
+*/
 impl Div for Vec3 {
      type Output = Self;
 
@@ -242,6 +257,11 @@ impl Div for Vec3 {
      }
 }
 
+/*
+     @Description: Division operator overloading for Vec3 (f32)
+     @Params: None
+     @Returns: None
+*/
 impl Div<f32> for Vec3 {
      type Output = Self;
 
